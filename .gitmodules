@@ -1,0 +1,3 @@
+[submodule "bayesopt/gp"]
+	path = bayesopt/gp
+	url = git@github.com:JohnYKiyo/GaussianProcess.git
