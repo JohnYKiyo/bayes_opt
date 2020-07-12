@@ -1,14 +1,33 @@
 from jax.config import config; config.update("jax_enable_x64", True)
 import jax
 import jax.numpy as np
-from jax import vmap,jit
+import jax.scipy as scp
+from jax import jit
 
 @jit
 def UCB(mu,sigma,kappa=5.):
-    return mu+kappa*sigma
+    return mu + kappa*sigma
 
-def PI(*args,**kwargs):
-    raise NotImplementedError
+@jit
+def LCB(mu,sigma,kappa=5.,**kwargs):
+    return -mu+kappa*sigma
 
-def EI(*args,**kwargs):
+@jit
+def scheduledLCB(mu,sigma,**kwargs):
+    it = kwargs.get('it')
+    kappa = np.sqrt(np.log(it+1)/(it+1))
+    return -mu+kappa*sigma
+
+@jit
+def PI(mu,sigma,xi=0.01,**kwargs):
+    vmin = kwargs.get('vmin')
+    return scp.stats.norm.cdf((vmin-mu-xi)/sigma)
+
+@jit
+def EI(mu,sigma,**kwargs):
+    vmin = kwargs.get('vmin')
+    Z=(vmin-mu)/sigma
+    return np.where(sigma==0,0,(vmin-mu)*scp.stats.norm.cdf(Z)+sigma*scp.stats.norm.pdf(Z))
+
+def GunbelUCB(mu,sigma,**kwargs):
     raise NotImplementedError
