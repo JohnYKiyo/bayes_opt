@@ -14,7 +14,7 @@ def AcquisitionLBFGSBOptimizer(gpr, acq, it, bounds):
 
     import scipy.optimize 
     def Obj(x):
-        mu, sigma = gpr.posterior_predictive(x, return_std=True)
+        mu, sigma = gpr.posterior_predictive(np.atleast_2d(x), return_std=True)
         return -1.*acq(mu, sigma, it=it, vmax=vmax, vmin=vmin).ravel()
 
     res = scipy.optimize.fmin_l_bfgs_b(Obj,
@@ -49,8 +49,8 @@ def AcquisitionGridOptimizer(gpr, acq, it, bounds, step):
 
     GS = GridSampler(bounds,step)
     mu_s, std_s = gpr.posterior_predictive(GS.grid,return_std=True)
-    val = -1.*acq(mu_s, std_s, it=it, vmax=vmax, vmin=vmin).ravel()
-    return GS.grid[np.argmin(val)],np.min(val)
+    val = acq(mu_s, std_s, it=it, vmax=vmax, vmin=vmin).ravel()
+    return GS.grid[np.argmax(val)],np.max(val)
 
 class GridSampler(object):
     def __init__(self, bounds, step):
@@ -62,7 +62,7 @@ class GridSampler(object):
         self.__ndim = len(self.__Xmin)
 
         ##step size init
-        self.__step = bayesopt.utils.transform_data(step)
+        self.__step = transform_data(step)
         if (self.__step.shape != (self.__ndim,1)):
             if self.__step.shape[1] != 1:
                 raise ValueError('step should be an 1-D array_like or a numerical value.')

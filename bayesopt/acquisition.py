@@ -13,10 +13,10 @@ def LCB(mu,sigma,kappa=5.,**kwargs):
     return -mu+kappa*sigma
 
 @jit
-def scheduledLCB(mu,sigma,**kwargs):
+def scheduledLCB(mu,sigma,kappa=5.,**kwargs):
     it = kwargs.get('it')
-    kappa = np.sqrt(np.log(it+1)/(it+1))
-    return -mu+kappa*sigma
+    schedule = np.sqrt(np.log(it+1) / (it+1))
+    return -mu+kappa*schedule*sigma
 
 @jit
 def PI(mu,sigma,xi=0.01,**kwargs):
