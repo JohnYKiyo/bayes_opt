@@ -25,7 +25,7 @@ class Acquisition_L_BFGS_B_Optimizer(BaseOptimizer):
         Args:
             bounds (array-like): 
                 An array giving the search range for the parameter.
-                :[[param1 min, param2 max],...,[param k min, param k max]]
+                :[[param1 min, param1 max],...,[param k min, param k max]]
             n_trial (int, optional): Number of trials to stabilize the L-BFGS-B. Defaults to 2.
         """        
         super(Acquisition_L_BFGS_B_Optimizer,self).__init__(bounds)
@@ -59,7 +59,7 @@ class Acquisition_SLSQP_Optimizer(BaseOptimizer):
         Args:
             bounds (array-like): 
                 An array giving the search range for the parameter.
-                :[[param1 min, param2 max],...,[param k min, param k max]]
+                :[[param1 min, param1 max],...,[param k min, param k max]]
             n_trial (int, optional): Number of trials to stabilize the SLSQP. Defaults to 2.
         """        
         super(Acquisition_SLSQP_Optimizer,self).__init__(bounds)
@@ -95,7 +95,7 @@ class Acquisition_Grid_Optimizer(BaseOptimizer):
         Args:
             bounds (array-like): 
                 An array giving the search range for the parameter.
-                :[[param1 min, param2 max],...,[param k min, param k max]]
+                :[[param1 min, param1 max],...,[param k min, param k max]]
             step (array-like): Grid size. [param1 step size, param2 step size,..., param k step size]
         """        
         super(Acquisition_Grid_Optimizer,self).__init__(bounds)
