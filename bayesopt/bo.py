@@ -6,9 +6,9 @@ from jax import jit
 
 from tqdm import tqdm
 
-from .gp.gp.utils import transform_data,data_checker
-from .gp.gp.kernel import GaussianRBFKernel
-from .gp.gp import GPR
+from GaussianProcess.utils import transform_data,data_checker
+from GaussianProcess.kernel import GaussianRBFKernel
+from GaussianProcess import GPR
 
 class BayesOpt(object):
     """Bayesian Optimization based on Gaussian Process.

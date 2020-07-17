@@ -5,7 +5,7 @@ import jax.scipy as scp
 from jax import jit
 import numpy as onp
 
-from .gp.gp.utils import transform_data
+from GaussianProcess.utils import transform_data
 
 class BaseOptimizer(object):
     def __init__(self,bounds):
