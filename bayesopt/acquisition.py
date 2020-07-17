@@ -47,6 +47,3 @@ def MaxEI(mu,sigma,**kwargs):
     vmax = kwargs.get('vmax')
     Z=(mu-vmax)/sigma
     return np.where(sigma==0,0,sigma*(Z*scp.stats.norm.cdf(Z)+scp.stats.norm.pdf(Z)))
-
-def GunbelUCB(mu,sigma,**kwargs):
-    raise NotImplementedError
