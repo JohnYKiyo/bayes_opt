@@ -15,7 +15,7 @@ Or install manualy
 
 ``` :sh
 $ git clone https://github.com/JohnYKiyo/bayesian_optimization.git
-$ cd GaussianProcess
+$ cd bayesian_optimization
 $ python setup.py install
 ```
 
