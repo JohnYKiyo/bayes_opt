@@ -26,9 +26,9 @@ class BayesOpt(object):
         acq (function) : Acquisition function.
     """
 
-    def __init__(self, f, initial_input, acq, acq_optim, kernel=None, alpha=1e-6, maximize=False):
-        """init
+    def __init__(self, f, initial_input, acq, acq_optim, kernel=None, alpha=1e-6, maximize=False, function_input_unpacking=True):
 
+        """init
         Args:
             f (function): function to optimize.
             initial_input (array-like): 
@@ -49,11 +49,26 @@ class BayesOpt(object):
 
             maximize (bool, optional): 
                 If True, optimize to maximum. Defaults to False.
+
+            function_input_unpacking (bool, optional): 
+                Whether unpack is required for the input format of the function. Defaults to True.
+
+                function_input_unpacking == True
+                def f(x,y):
+                    return (x-2.)**2 + (y+3)**2
+
+                function_input_unpacking == False
+                def f2(x):
+                    return f(x[:,0],x[:,1])
         """
 
         self.__objectivefunction = f
         self.__initial_X = transform_data(initial_input)
-        self.__initial_Y = self.__objectivefunction(*self.__initial_X.T) ## unpack list (like [x1,x2,...,xd]) to x1,x2,...,xd for function inputs by using '*' operator.
+        self.__function_unpack = function_input_unpacking
+        if self.__function_unpack:
+            self.__initial_Y = self.__objectivefunction(*self.__initial_X.T) ## unpack list (like [x1,x2,...,xd]) to x1,x2,...,xd for function inputs by using '*' operator.
+        else:
+            self.__initial_Y = self.__objectivefunction(self.__initial_X)
         data_checker(self.__initial_X,self.__initial_Y)
         self.__maximize = maximize
 
@@ -96,7 +111,10 @@ class BayesOpt(object):
         with tqdm(total=max_iter) as bar:
             for i in range(max_iter):
                 loc, acq_val = self.__acq_optimizer(gpr=self.__gpr, acq=self.__acq, it=i)
-                Y_obs = self.__objectivefunction(*loc.T) ## unpack list (like [x1,x2,...,xd]) to x1,x2,...,xd for function inputs by using '*' operator.
+                if self.__function_unpack:
+                    Y_obs = self.__objectivefunction(*loc.T) ## unpack list (like [x1,x2,...,xd]) to x1,x2,...,xd for function inputs by using '*' operator.
+                else:
+                    Y_obs = self.__objectivefunction(np.atleast_2d(loc)) 
                 self.__gpr.append_data(np.atleast_2d(loc), Y_obs)
                 self.__X_history.append(loc)
                 self.__Y_history.append(Y_obs)
