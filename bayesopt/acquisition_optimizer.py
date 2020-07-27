@@ -53,6 +53,41 @@ class Acquisition_L_BFGS_B_Optimizer(BaseOptimizer):
                 value = res[1]
         return loc, value
 
+class Acquisition_L_BFGS_B_LogOptimizer(BaseOptimizer):
+    def __init__(self, bounds, n_trial=2):
+        """Optimizer for acquisition function by L-BFGS-B.
+        Args:
+            bounds (array-like): 
+                An array giving the search range for the parameter.
+                :[[param1 min, param1 max],...,[param k min, param k max]]
+            n_trial (int, optional): Number of trials to stabilize the L-BFGS-B. Defaults to 2.
+        """        
+        super(Acquisition_L_BFGS_B_LogOptimizer,self).__init__(bounds)
+        self.n_trial = n_trial
+
+    def optimize(self, gpr, acq, it):
+        vmax = np.max(gpr.Y_train)
+        vmin = np.min(gpr.Y_train)
+        loc = None
+        value = None
+        import scipy.optimize
+        def Obj(x):
+            ex = np.power(10,x)
+            mu, sigma = gpr.posterior_predictive(np.atleast_2d(ex), return_std=True)
+            return -1.*acq(mu, sigma, it=it, vmax=vmax, vmin=vmin).ravel()
+
+        x_seeds = onp.random.uniform(self.bounds[:,0],self.bounds[:,1], size=(self.n_trial,self.ndim))
+        for xtry in x_seeds:
+            res = scipy.optimize.fmin_l_bfgs_b(Obj,
+                                               x0=xtry, 
+                                               bounds=self.bounds, 
+                                               approx_grad=True, 
+                                               maxiter=100)
+            if (loc is None) or (res[1] < value):
+                loc = np.power(10,res[0])
+                value = res[1]
+        return loc, value
+
 class Acquisition_SLSQP_Optimizer(BaseOptimizer):
     def __init__(self, bounds, n_trial=2):
         """Optimizer for acquisition function by SLSQP.
