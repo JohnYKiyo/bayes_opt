@@ -29,6 +29,7 @@ setup(
     install_requires=[
         'jax>=0.1.57',
         'jaxlib>=0.1.37',
+        'scipy>=1.5.1',
         'GaussianProcess @ git+https://github.com/JohnYKiyo/GaussianProcess.git'
     ]
 )
