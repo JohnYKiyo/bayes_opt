@@ -2,8 +2,8 @@
 ## 1\. Overview
 The baysian_optimization(gpbayesopt) package optimizes the black-box function. The algorithm is Baysian optimization based on the Gaussian process.  
 The major differences from the famous Baysian Optimization package (GPyOpt) are as follows.    
-1. You can design the acquisition function.   
-2. You can design the kernel for use in the Gaussian Process.   
+1. You can easily design the acquisition function.   
+2. You can easily design the kernel for use in the Gaussian Process.   
 3. You can design an algorithm to find the next search point from the acquisition function.  
 
 These will give you the flexibility to improve and experiment with Bayesian optimization.   
