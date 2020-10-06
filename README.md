@@ -5,6 +5,7 @@ The major differences from the famous Baysian Optimization package (GPyOpt) are 
 1. You can design the acquisition function.   
 2. You can design the kernel for use in the Gaussian Process.   
 3. You can design an algorithm to find the next search point from the acquisition function.  
+
 These will give you the flexibility to improve and experiment with Bayesian optimization.   
 For example, if you want to deal with discretized search variables, you can change the kernel, acquisition function, and algorithm of next search point.
 We hope that this will lead to the development of new Bayesian Optimization research.
