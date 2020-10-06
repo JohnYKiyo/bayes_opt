@@ -8,7 +8,7 @@ The major differences from the famous Baysian Optimization package (GPyOpt) are 
 
 These will give you the flexibility to improve and experiment with Bayesian optimization.   
 For example, if you want to deal with discretized search variables, you can change the kernel, acquisition function, and algorithm of next search point.
-We hope that this will lead to the development of new Bayesian Optimization research.
+We hope that this will lead to the research and development of new Bayesian optimization algorithms.
 
 ## 2\. Installation
 
