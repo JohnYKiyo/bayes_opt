@@ -85,7 +85,7 @@ class BayesOpt(object):
                     iniY.append(self.__objectivefunction(*iniX.T))  # unpack list (like [x1,x2,...,xd]) to x1,x2,...,xd for function inputs by using '*' operator.
 
                 else:
-                    iniY.append(self.__objectivefunction(iniX))
+                    iniY.append(self.__objectivefunction(np.atleast_2d(iniX)))
             return np.array(iniY)
         else:
             if initial_Y.shape[0] != self.__initial_X.shape[0]:
