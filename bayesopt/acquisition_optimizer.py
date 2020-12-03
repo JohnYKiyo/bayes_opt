@@ -47,8 +47,7 @@ class Acquisition_L_BFGS_B_Optimizer(BaseOptimizer):
             res = scipy.optimize.fmin_l_bfgs_b(Obj,
                                                x0=xtry,
                                                bounds=self.bounds,
-                                               approx_grad=True,
-                                               maxiter=100)
+                                               approx_grad=True)
             if (loc is None) or (res[1] < value):
                 loc = res[0]
                 value = res[1]
@@ -84,8 +83,7 @@ class Acquisition_L_BFGS_B_LogOptimizer(BaseOptimizer):
             res = scipy.optimize.fmin_l_bfgs_b(Obj,
                                                x0=xtry,
                                                bounds=self.bounds,
-                                               approx_grad=True,
-                                               maxiter=100)
+                                               approx_grad=True)
             if (loc is None) or (res[1] < value):
                 loc = np.power(10, res[0])
                 value = res[1]
@@ -121,11 +119,47 @@ class Acquisition_SLSQP_Optimizer(BaseOptimizer):
                                             x0=xtry,
                                             bounds=self.bounds,
                                             iprint=0,
-                                            full_output=True,
-                                            iter=100)
+                                            full_output=True)
             if (loc is None) or (res[1] < value):
                 loc = res[0]
                 value = res[1]
+        return loc, value
+
+
+class Acquisition_Powell_Optimizer(BaseOptimizer):
+    def __init__(self, bounds, n_trial=2):
+        """Optimizer for acquisition function by Powell.
+
+        Args:
+            bounds (array-like):
+                An array giving the search range for the parameter.
+                :[[param1 min, param1 max],...,[param k min, param k max]]
+            n_trial (int, optional): Number of trials to stabilize the L-BFGS-B. Defaults to 2.
+        """
+        super(Acquisition_Powell_Optimizer, self).__init__(bounds)
+        self.n_trial = n_trial
+
+    def optimize(self, gpr, acq, it):
+        vmax = np.max(gpr.Y_train)
+        vmin = np.min(gpr.Y_train)
+        loc = None
+        value = None
+        import scipy.optimize
+
+        def Obj(x):
+            mu, sigma = gpr.posterior_predictive(np.atleast_2d(x), return_std=True)
+            return -1. * acq(mu, sigma, it=it, vmax=vmax, vmin=vmin).ravel()
+
+        x_seeds = onp.random.uniform(self.bounds[:, 0], self.bounds[:, 1], size=(self.n_trial, self.ndim))
+        for xtry in x_seeds:
+            res = scipy.optimize.minimize(Obj,
+                                          x0=xtry,
+                                          method='Powell',
+                                          bounds=self.bounds)
+
+            if (loc is None) or (res.fun < value):
+                loc = res.x
+                value = res.fun
         return loc, value
 
 
