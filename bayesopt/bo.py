@@ -46,6 +46,19 @@ class BayesOpt(object):
         maximization (bool) : If True, optimize to maximum.
         n_trial (int) : Number of searches.
         acq (function) : Acquisition function.
+
+    Examples:
+        >>> import numpy as np
+        >>> import bayesopt
+        >>> def f(x):
+        ...     return -x*np.sin(x)
+        >>> BO = bayesopt.BayesOpt(f=f,
+        ...                        initial_input=np.array([[0.],[1.]]),
+        ...                        acq=bayesopt.acquisition.LCB,
+        ...                        acq_optim=bayesopt.acquisition_optimizer.Acquisition_L_BFGS_B_Optimizer(bounds=[0,18],n_trial=2),
+        ...                        maximize=False,
+        ...                        )
+        >>> BO.run_optim(20)
     """
 
     def __init__(self, f, initial_input, acq, acq_optim, initial_Y=None, kernel=None, alpha=1e-6, maximize=False, function_input_unpacking=True):
@@ -95,7 +108,7 @@ class BayesOpt(object):
     def run_optim(self, max_iter, terminate_function=None):
         '''Run baysian optimization.
         Args:
-            max_iter (int): exploration horizon, or number of acquisitions.
+            max_iter (int): exploration horizon, number of evaluations.
 
             terminate_function (function, optional):
                 A function that receives iteration and the history of input and output, and returns a bool that terminates iteration.
@@ -106,7 +119,6 @@ class BayesOpt(object):
                             return True
                         else:
                             return False
-
         '''
 
         with tqdm(total=max_iter) as bar:
@@ -176,3 +188,8 @@ class BayesOpt(object):
     @property
     def acq(self):
         return self.__acq
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
